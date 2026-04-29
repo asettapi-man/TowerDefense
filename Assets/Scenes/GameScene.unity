@@ -369,7 +369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f90e96595637c2c41804506fb86c71ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MouseController
-  interval: 2
+  attackInterval: 1
   damage: 1
 --- !u!4 &1004618095
 Transform:
@@ -421,6 +421,8 @@ MonoBehaviour:
   towerPos: {fileID: 2089036189}
   moveSpeed: 1
   hp: 10
+  damage: 1
+  attackInterval: 0.1
 --- !u!212 &1182122433
 SpriteRenderer:
   serializedVersion: 2
@@ -579,6 +581,7 @@ GameObject:
   - component: {fileID: 2089036189}
   - component: {fileID: 2089036188}
   - component: {fileID: 2089036190}
+  - component: {fileID: 2089036191}
   m_Layer: 0
   m_Name: Tower
   m_TagString: Tower
@@ -706,6 +709,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &2089036191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2089036187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d60d450f24b945d4889ef479ec530f28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  hp: 10
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
