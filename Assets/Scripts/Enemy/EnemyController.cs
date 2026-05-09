@@ -2,11 +2,9 @@ using Unity.VisualScripting;
 using System.Collections;
 using UnityEngine;
 
+[DisallowMultipleComponent]
 public class EnemyController : MonoBehaviour
 {
-    [Tooltip("タワーの座標")]
-    [SerializeField] private Transform towerPos;
-
     [Header("ステータス")]
     [Tooltip("敵の移動速度")]
     [SerializeField] private float moveSpeed = 0.1f;
@@ -14,19 +12,19 @@ public class EnemyController : MonoBehaviour
     [Tooltip("敵の体力")]
     [SerializeField] private int hp = 10;
 
-    [Tooltip("敵の攻撃力")] 
+    [Tooltip("敵の攻撃力")]
     [SerializeField] private int damage = 1;
 
-    [Tooltip("攻撃のクールタイム")]
-    [SerializeField, Range(0.1f, 3f)] private float attackInterval = 0.1f;
+    private CreateEnemy createEnemy;
+
+    //タワー座標
+    private Transform towerPos;
 
     //自身の座標
     private Vector2 selfPos;
 
     //移動停止フラグ
     private bool isMove = true;
-
-    private float lastAttackTime = 0.0f;
 
     private void OnValidate()
     {
@@ -39,7 +37,8 @@ public class EnemyController : MonoBehaviour
     private void Start()
     {
         //参照忘れを防ぐために定義
-        if (towerPos == null) towerPos = GameObject.FindWithTag("Tower").transform;
+        towerPos = GameObject.FindWithTag("Tower").transform;
+        createEnemy = FindFirstObjectByType<CreateEnemy>();
 
         //フラグを初期化
         isMove = true;
@@ -47,6 +46,7 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     { 
+        //移動中か？
         if (isMove) MoveToTower();
     }
 
@@ -66,12 +66,18 @@ public class EnemyController : MonoBehaviour
         {
             //移動不可にする
             isMove = false;
+        }
+    }
 
-            //ゲーム内時間がインターバルより値が大きくなった？
-            if (Time.time >= lastAttackTime + attackInterval)
-            {
-                collision.gameObject.GetComponent<TowerController>().TakeDamage(damage);
-            }
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Tower"))
+        {
+            //タワーにダメージを与える
+            collision.gameObject.GetComponent<TowerController>().TakeDamage(damage);
+
+            //敵を倒す
+            TakeDamage(hp);
         }
     }
 
@@ -88,9 +94,14 @@ public class EnemyController : MonoBehaviour
         if (hp <= 0)
         {
             hp = 0;
+            Debug.Log("死亡");
+            createEnemy.enemies.Remove(this.gameObject);
+            Debug.Log($"敵の出現数：{createEnemy.enemies.Count}");
             Destroy(this.gameObject);
         }
-
-        Debug.Log($"敵の残りの体力: {hp}");
+        else
+        {
+            Debug.Log($"敵の残りの体力: {hp}");
+        }
     }
 }
