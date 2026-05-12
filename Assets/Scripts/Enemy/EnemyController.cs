@@ -5,15 +5,10 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class EnemyController : MonoBehaviour
 {
-    [Header("ステータス")]
-    [Tooltip("敵の移動速度")]
-    [SerializeField] private float moveSpeed = 0.1f;
-
-    [Tooltip("敵の体力")]
-    [SerializeField] private int hp = 10;
-
-    [Tooltip("敵の攻撃力")]
-    [SerializeField] private int damage = 1;
+    [Header("パラメーター")]
+    [Tooltip("移動速度")][SerializeField] private float moveSpeed = 0.1f;
+    [Tooltip("体力")][SerializeField] private int hp = 10;
+    [Tooltip("攻撃力")][SerializeField] private int damage = 1;
 
     private CreateEnemy createEnemy;
 

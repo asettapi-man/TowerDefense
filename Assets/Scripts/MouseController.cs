@@ -2,16 +2,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
+[DisallowMultipleComponent]
 public class MouseController : MonoBehaviour
 {
     //タグ名（固定）
     private const string enemyTag = "Enemy";
 
-    [Tooltip("マウスによる攻撃のクールタイム")]
-    [SerializeField, Range(0.1f, 3f)] private float attackInterval = 0.5f;
-
-    [Tooltip("マウスによる攻撃のダメージ量")]
-    [SerializeField] private int damage = 2;
+    [Tooltip("攻撃のクールタイム")][SerializeField, Range(0.1f, 3f)] private float attackInterval = 0.5f;
+    [Tooltip("攻撃力")][SerializeField] private int damage = 2;
 
     //最後に攻撃した時の時間
     private float lastAttackTime = 0.0f;

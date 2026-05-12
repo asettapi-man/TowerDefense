@@ -1,10 +1,14 @@
+using System.Collections;
 using System.Security.Cryptography;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
+[DisallowMultipleComponent]
 public class BulletController : MonoBehaviour
 {
-    [SerializeField] private float speed = 1f;
+    [Header("パラメーター")]
+    [Tooltip("移動速度")][SerializeField] private float speed = 1f;
+    [Tooltip("攻撃力")][SerializeField] private int damage = 1;
 
     //敵の座標
     private Transform targetPos;
@@ -25,7 +29,7 @@ public class BulletController : MonoBehaviour
         speed = Mathf.Clamp(speed, 0, speed);
     }
 
-    void Start()
+    private void Awake()
     {
         //参照忘れを防ぐために定義
         towerPos = GameObject.FindWithTag("Tower").transform;
@@ -43,7 +47,7 @@ public class BulletController : MonoBehaviour
 
         //座標をMoveTowardsで敵に近づける
         Vector2 newPos = Vector2.MoveTowards(
-            rb.position,            // 現在位置
+            gameObject.transform.position,            // 現在位置
             targetPos.position,        // 目標位置（敵）
             speed * Time.fixedDeltaTime  // 1フレームの移動量
         );
@@ -90,5 +94,17 @@ public class BulletController : MonoBehaviour
 
         //最も近い敵の座標を返す
         return nearestEnemy;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //敵に触れた？
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            //弾の非表示
+            EnemyController enemyController = collision.gameObject.GetComponent<EnemyController>();
+            enemyController.TakeDamage(damage); //敵に攻撃
+            spawner.ReturnToPool(gameObject);   //弾を非表示
+        }
     }
 }

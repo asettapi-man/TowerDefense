@@ -6,13 +6,19 @@ using UnityEngine.Rendering;
 [DisallowMultipleComponent]
 public class CreateEnemy : MonoBehaviour
 {
+    [Header("オブジェクト設定")]
     [SerializeField] GameObject enemyPrefab;
+    [Space(10)]
+    [Header("パラメーター")]
+    [Tooltip("生成開始時間")][SerializeField] private float startCreateInterval = 3.0f;
+    [Tooltip("生成クールタイム")][SerializeField] private float createInterval = 7.0f;
+
+    //出現している敵の管理
+    [HideInInspector]public List<GameObject> enemies = new List<GameObject>();
 
     //カメラ
     private Camera cam;
 
-    //出現している敵の管理
-    public List<GameObject> enemies = new List<GameObject>();
 
     void Start()
     {
@@ -20,7 +26,7 @@ public class CreateEnemy : MonoBehaviour
         cam = Camera.main;
 
         //繰り返し敵を生成
-        InvokeRepeating("SpawnEnemy", 3.0f, 7.0f);
+        InvokeRepeating("SpawnEnemy", startCreateInterval, createInterval);
     }
 
     void Update()
