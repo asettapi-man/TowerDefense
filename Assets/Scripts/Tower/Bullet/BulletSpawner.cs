@@ -12,6 +12,9 @@ public class BulletSpawner : MonoBehaviour
     [Tooltip("弾の上限")][SerializeField] private int maxBulletCount = 20;
     [Tooltip("クールダウン")][SerializeField] private float fireInterval = 5.0f;
 
+    //スクリプト参照
+    private CreateEnemy createEnemy;
+
     //オブジェクトプールのインスタンス
     private ObjectPool<GameObject> bullets;
     private float fireTimer = 0.0f;   //弾発射時間
@@ -32,10 +35,16 @@ public class BulletSpawner : MonoBehaviour
 
             maxSize: maxBulletCount
             );
+
+        //参照忘れを防ぐために定義
+        createEnemy = FindFirstObjectByType<CreateEnemy>();
     }
 
     void Update()
     {
+        //敵が存在しない場合は処理終了
+        if (createEnemy.enemies.Count <= 0) return;
+
         //発射時間の加算
         fireTimer += Time.deltaTime;
         if (fireTimer >= fireInterval)

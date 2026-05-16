@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Security.Cryptography;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 [DisallowMultipleComponent]
 public class BulletController : MonoBehaviour
@@ -9,12 +7,11 @@ public class BulletController : MonoBehaviour
     [Header("パラメーター")]
     [Tooltip("移動速度")][SerializeField] private float speed = 1f;
     [Tooltip("攻撃力")][SerializeField] private int damage = 1;
+    [Tooltip("ビューポート座標外の余白")]
+    [SerializeField] private float viewportMargin = 0.1f;
 
     //敵の座標
     private Transform targetPos;
-
-    //タワー座標
-    private Transform towerPos;
 
     private CreateEnemy createEnemy;
 
@@ -23,40 +20,56 @@ public class BulletController : MonoBehaviour
     //物理演算用
     private Rigidbody2D rb;
 
+    private Camera cam;
+
+    //現在の座標
+    private Vector2 currentPos;
+
     private void OnValidate()
     {
         //０より大きい値に強制する
         speed = Mathf.Clamp(speed, 0, speed);
+        damage = Mathf.Clamp(damage, 0, damage);
+        viewportMargin = Mathf.Clamp(viewportMargin, 0, viewportMargin);
     }
 
     private void Awake()
     {
         //参照忘れを防ぐために定義
-        towerPos = GameObject.FindWithTag("Tower").transform;
         createEnemy = FindFirstObjectByType<CreateEnemy>();
+        cam = Camera.main;
     }
 
     void Update()
     {
-        //敵がいない場合は最も近い敵の座標を再取得
-        if (targetPos == null)
+        Vector3 viewPos = cam.WorldToViewportPoint(transform.position); //ビューポート座標を取得
+        if( viewPos.x < 0 - viewportMargin || viewPos.x > 1 + viewportMargin || viewPos.y < 0 - viewportMargin || viewPos.y > 1 + viewportMargin)
         {
-            targetPos = FindNearestEnemy();
-            if (targetPos == null) return;
+            //ビューポート座標外に出たら非表示
+            spawner.ReturnToPool(gameObject);
         }
 
-        //座標をMoveTowardsで敵に近づける
-        Vector2 newPos = Vector2.MoveTowards(
-            gameObject.transform.position,            // 現在位置
-            targetPos.position,        // 目標位置（敵）
-            speed * Time.fixedDeltaTime  // 1フレームの移動量
-        );
+        //ターゲット先が存在している？
+        if (targetPos != null)
+        {
+            //座標をMoveTowardsで敵に近づける
+            currentPos = Vector2.MoveTowards(
+                gameObject.transform.position,  // 現在位置
+                targetPos.position,             // 目標位置（敵）
+                speed * Time.fixedDeltaTime     // 1フレームの移動量
+            );
 
-        //スプライトの向きを進行方向に合わせる
-        Vector2 dir = (Vector2)targetPos.position - rb.position;
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
-        rb.MoveRotation(angle);     //回転を反映
-        rb.MovePosition(newPos);    //座標を反映
+            //スプライトの向きを進行方向に合わせる
+            Vector2 dir = (Vector2)targetPos.position - rb.position;
+            float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
+            rb.MoveRotation(angle);         //回転を反映
+            rb.MovePosition(currentPos);    //座標を反映
+        }
+        else
+        {
+            //そのまま直進
+            transform.Translate(Vector2.up * speed * Time.deltaTime);
+        }
     }
 
     public void Init(BulletSpawner spawner)

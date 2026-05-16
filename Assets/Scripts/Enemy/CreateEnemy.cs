@@ -39,14 +39,11 @@ public class CreateEnemy : MonoBehaviour
     /// </summary>
     private void SpawnEnemy()
     {
-        //カメラのZ座標を取得
-        var camZ = cam.transform.position.z;
-
         //スクリーン座標の左下を取得
-        Vector3 bottomLeft = cam.ScreenToWorldPoint(new Vector3(0, 0, -camZ));
+        Vector3 bottomLeft = cam.ScreenToWorldPoint(new Vector3(0, 0, 0));
 
         //スクリーン座標の右上を取得
-        Vector3 topRight = cam.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, -camZ));
+        Vector3 topRight = cam.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
 
         //4方向の座標取得
         float left = bottomLeft.x;
