@@ -9,6 +9,7 @@ public class EnemyController : MonoBehaviour
     [Tooltip("ˆÚ“®‘¬“x")][SerializeField] private float moveSpeed = 0.1f;
     [Tooltip("‘Ì—Í")][SerializeField] private int hp = 10;
     [Tooltip("UŒ‚—Í")][SerializeField] private int damage = 1;
+    [Tooltip("•ñV‹à")][SerializeField] private int rewardMoney = 10;
 
     private CreateEnemy createEnemy;
 
@@ -20,6 +21,9 @@ public class EnemyController : MonoBehaviour
 
     //ˆÚ“®’â~ƒtƒ‰ƒO
     private bool isMove = true;
+
+    //€–Sƒtƒ‰ƒO
+    private bool isDead = false;
 
     private void OnValidate()
     {
@@ -83,14 +87,18 @@ public class EnemyController : MonoBehaviour
     /// <returns></returns>
     public void TakeDamage(int dealDamage)
     {
+        if (isDead) return; //‚·‚Å‚É€–S‚µ‚Ä‚¢‚éê‡‚Íˆ—‚µ‚È‚¢
+
         hp -= dealDamage;
 
         //‘Ì—Í‚ª‚OˆÈ‰º‚È‚ç
         if (hp <= 0)
         {
+            isDead = true; //€–Sƒtƒ‰ƒO‚ğ—§‚Ä‚é
             hp = 0;
+            GameManager.Instance.AddMoney(rewardMoney); //“G‚ğ“|‚µ‚½•ñV‹à‚ğ’Ç‰Á
             Debug.Log("€–S");
-            createEnemy.enemies.Remove(this.gameObject);
+            createEnemy.enemies.Remove(this.gameObject);   //“G‚ÌƒŠƒXƒg‚©‚çíœ
             Debug.Log($"“G‚ÌoŒ»”F{createEnemy.enemies.Count}");
             Destroy(this.gameObject);
         }
