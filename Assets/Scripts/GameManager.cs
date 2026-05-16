@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -5,6 +6,9 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     public int money { get; private set; }
+
+    //所持金が変化したときに呼び出されるイベント
+    public event Action<int> OnMoneyChanged;
 
     private void Awake()
     {
@@ -27,6 +31,7 @@ public class GameManager : MonoBehaviour
     public void AddMoney(int amount)
     {
         money += amount;
+        OnMoneyChanged?.Invoke(GameManager.Instance.money); //所持金が変化したことを通知
         Debug.Log($"所持金：{money}");
     }
 }
