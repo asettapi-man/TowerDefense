@@ -13,9 +13,9 @@ public class BulletController : MonoBehaviour
     //敵の座標
     private Transform targetPos;
 
-    private CreateEnemy createEnemy;
+    private EnemySpawnerManager enemySpawner;
 
-    private BulletSpawner spawner;
+    private BulletSpawner bulletSpawner;
 
     //物理演算用
     private Rigidbody2D rb;
@@ -36,7 +36,7 @@ public class BulletController : MonoBehaviour
     private void Awake()
     {
         //参照忘れを防ぐために定義
-        createEnemy = FindFirstObjectByType<CreateEnemy>();
+        enemySpawner = FindFirstObjectByType<EnemySpawnerManager>();
         cam = Camera.main;
     }
 
@@ -46,7 +46,7 @@ public class BulletController : MonoBehaviour
         if( viewPos.x < 0 - viewportMargin || viewPos.x > 1 + viewportMargin || viewPos.y < 0 - viewportMargin || viewPos.y > 1 + viewportMargin)
         {
             //ビューポート座標外に出たら非表示
-            spawner.ReturnToPool(gameObject);
+            bulletSpawner.ReturnToPool(gameObject);
         }
 
         //ターゲット先が存在している？
@@ -72,9 +72,9 @@ public class BulletController : MonoBehaviour
         }
     }
 
-    public void Init(BulletSpawner spawner)
+    public void Init(BulletSpawner bulletSpawner)
     {
-        this.spawner = spawner;
+        this.bulletSpawner = bulletSpawner;
         rb = GetComponent<Rigidbody2D>();
         targetPos = FindNearestEnemy(); //最も近い敵の座標を取得
     }
@@ -92,7 +92,7 @@ public class BulletController : MonoBehaviour
         float minDistance = Mathf.Infinity; //float型の最大値を初期値として設定
 
         //敵のリストをループして最も近い敵を見つける
-        foreach (var enemy in createEnemy.enemies)
+        foreach (var enemy in enemySpawner.enemies)
         {
             //弾と敵との距離を計算
             float distance = Vector3.Distance(transform.position, enemy.transform.position);
@@ -117,7 +117,7 @@ public class BulletController : MonoBehaviour
             //弾の非表示
             EnemyController enemyController = collision.gameObject.GetComponent<EnemyController>();
             enemyController.TakeDamage(damage); //敵に攻撃
-            spawner.ReturnToPool(gameObject);   //弾を非表示
+            bulletSpawner.ReturnToPool(gameObject);   //弾を非表示
         }
     }
 }

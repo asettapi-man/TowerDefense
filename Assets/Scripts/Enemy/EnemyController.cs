@@ -5,13 +5,12 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class EnemyController : MonoBehaviour
 {
-    [Header("パラメーター")]
-    [Tooltip("移動速度")][SerializeField] private float moveSpeed = 0.1f;
-    [Tooltip("体力")][SerializeField] private int hp = 10;
-    [Tooltip("攻撃力")][SerializeField] private int damage = 1;
-    [Tooltip("報酬金")][SerializeField] private int rewardMoney = 10;
+    [Tooltip("敵のステータス情報")]
+    [SerializeField] private EnemyStatusData enemyStatusData;
 
-    private CreateEnemy createEnemy;
+    private int hp; //体力
+
+    private EnemySpawnerManager enemySpawner;
 
     //タワー座標
     private Transform towerPos;
@@ -25,21 +24,14 @@ public class EnemyController : MonoBehaviour
     //死亡フラグ
     private bool isDead = false;
 
-    private void OnValidate()
-    {
-        //０より大きい値に強制する
-        moveSpeed = Mathf.Clamp(moveSpeed, 0, moveSpeed);
-        hp = Mathf.Clamp(hp, 0, hp);
-        damage = Mathf.Clamp(damage, 0, damage);
-    }
-
     private void Start()
     {
         //参照忘れを防ぐために定義
         towerPos = GameObject.FindWithTag("Tower").transform;
-        createEnemy = FindFirstObjectByType<CreateEnemy>();
+        enemySpawner = GameObject.FindFirstObjectByType<EnemySpawnerManager>();
 
-        //フラグを初期化
+        //初期化
+        hp = enemyStatusData.statusData.hp;
         isMove = true;
     }
 
@@ -55,7 +47,7 @@ public class EnemyController : MonoBehaviour
     private void MoveToTower()
     {
         //Vector3.MoveTowardsで自身の位置から目標位置までどのように移動するか指定可能
-        transform.position = Vector3.MoveTowards(transform.position, towerPos.position, moveSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, towerPos.position, enemyStatusData.statusData.moveSpeed * Time.deltaTime);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -73,7 +65,7 @@ public class EnemyController : MonoBehaviour
         if (collision.gameObject.CompareTag("Tower"))
         {
             //タワーにダメージを与える
-            collision.gameObject.GetComponent<TowerController>().TakeDamage(damage);
+            collision.gameObject.GetComponent<TowerController>().TakeDamage(enemyStatusData.statusData.damage);
 
             //敵を倒す
             TakeDamage(hp);
@@ -96,10 +88,10 @@ public class EnemyController : MonoBehaviour
         {
             isDead = true; //死亡フラグを立てる
             hp = 0;
-            GameManager.Instance.AddMoney(rewardMoney); //敵を倒した報酬金を追加
+            GameManager.Instance.AddMoney(enemyStatusData.statusData.rewardMoney); //敵を倒した報酬金を追加
             Debug.Log("死亡");
-            createEnemy.enemies.Remove(this.gameObject);   //敵のリストから削除
-            Debug.Log($"敵の出現数：{createEnemy.enemies.Count}");
+            enemySpawner.enemies.Remove(this.gameObject);   //敵のリストから削除
+            Debug.Log($"敵の出現数：{enemySpawner.enemies.Count}");
             Destroy(this.gameObject);
         }
         else

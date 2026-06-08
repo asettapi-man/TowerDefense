@@ -4,27 +4,14 @@ using System.Collections;
 [DisallowMultipleComponent]
 public class TowerController : MonoBehaviour
 {
-    [Header("パラメーター")]
-    [Tooltip("タワーの体力")][SerializeField] private int hp = 10;
+    [Tooltip("タワーのステータス情報")]
+    [SerializeField] private TowerStatusData towerStatusData;
 
-    private CreateEnemy createEnemy;
+    private int hp; //体力
 
-    private void OnValidate()
+    private void Start()
     {
-        //０より大きい値に強制する
-        hp = Mathf.Clamp(hp, 0, hp);
-    }
-
-    void Start()
-    {
-        //参照忘れを防ぐために参照先を登録
-        createEnemy = GameObject.FindFirstObjectByType<CreateEnemy>();
-    }
-
-
-    void Update()
-    {
-
+        hp = towerStatusData.statusData.hp;
     }
 
     /// <summary>

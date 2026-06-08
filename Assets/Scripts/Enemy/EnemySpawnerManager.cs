@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 [DisallowMultipleComponent]
-public class CreateEnemy : MonoBehaviour
+public class EnemySpawnerManager : MonoBehaviour
 {
     [Header("オブジェクト設定")]
     [SerializeField] GameObject enemyPrefab;
