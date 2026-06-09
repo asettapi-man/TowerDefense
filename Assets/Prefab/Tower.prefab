@@ -165,4 +165,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5dfb33dc72a0814ca58a5663d99fa78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BulletSpawner
+  bulletPrefab: {fileID: 3222857538829541016, guid: bd5c3a6923bcef442b2480674e369052, type: 3}
   fireInterval: 0.5
+  maxBulletCount: 20

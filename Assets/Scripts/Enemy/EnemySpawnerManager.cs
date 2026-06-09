@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.Pool;
 
 [DisallowMultipleComponent]
 public class EnemySpawnerManager : MonoBehaviour
@@ -19,6 +18,13 @@ public class EnemySpawnerManager : MonoBehaviour
     //カメラ
     private Camera cam;
 
+    //敵用オブジェクトプール
+    private ObjectPool<GameObject> enemyPool;
+
+    private void Awake()
+    {
+        
+    }
 
     void Start()
     {
