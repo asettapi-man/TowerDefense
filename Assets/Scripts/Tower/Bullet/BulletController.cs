@@ -5,7 +5,7 @@ using UnityEngine;
 public class BulletController : MonoBehaviour
 {
     [Header("パラメーター")]
-    [Tooltip("移動速度")][SerializeField] private float speed = 1f;
+    [Tooltip("移動速度"), SerializeField] private float speed = 1f;
     [Tooltip("攻撃力")][SerializeField] private int damage = 1;
     [Tooltip("ビューポート座標外の余白")]
     [SerializeField] private float viewportMargin = 0.1f;
@@ -38,6 +38,7 @@ public class BulletController : MonoBehaviour
         //参照忘れを防ぐために定義
         enemySpawner = FindFirstObjectByType<EnemySpawnerManager>();
         cam = Camera.main;
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
@@ -47,10 +48,11 @@ public class BulletController : MonoBehaviour
         {
             //ビューポート座標外に出たら非表示
             bulletSpawner.ReturnToPool(gameObject);
+            return;
         }
 
         //ターゲット先が存在している？
-        if (targetPos != null)
+        if (HasTarget())
         {
             //座標をMoveTowardsで敵に近づける
             currentPos = Vector2.MoveTowards(
@@ -67,6 +69,7 @@ public class BulletController : MonoBehaviour
         }
         else
         {
+            targetPos = null;   //ターゲットを外す
             //そのまま直進
             transform.Translate(Vector2.up * speed * Time.deltaTime);
         }
@@ -75,8 +78,12 @@ public class BulletController : MonoBehaviour
     public void Init(BulletSpawner bulletSpawner)
     {
         this.bulletSpawner = bulletSpawner;
-        rb = GetComponent<Rigidbody2D>();
         targetPos = FindNearestEnemy(); //最も近い敵の座標を取得
+    }
+
+    private bool HasTarget()
+    {
+        return targetPos != null && targetPos.gameObject.activeInHierarchy;
     }
 
     /// <summary>
@@ -92,8 +99,10 @@ public class BulletController : MonoBehaviour
         float minDistance = Mathf.Infinity; //float型の最大値を初期値として設定
 
         //敵のリストをループして最も近い敵を見つける
-        foreach (var enemy in enemySpawner.enemies)
+        foreach (var enemy in enemySpawner.Enemies)
         {
+            if (enemy == null || !enemy.activeInHierarchy) continue;
+
             //弾と敵との距離を計算
             float distance = Vector3.Distance(transform.position, enemy.transform.position);
 

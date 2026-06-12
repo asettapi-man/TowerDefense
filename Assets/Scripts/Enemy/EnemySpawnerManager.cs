@@ -9,41 +9,97 @@ public class EnemySpawnerManager : MonoBehaviour
     [SerializeField] GameObject enemyPrefab;
     [Space(10)]
     [Header("パラメーター")]
-    [Tooltip("生成開始時間")][SerializeField] private float startCreateInterval = 3.0f;
-    [Tooltip("生成クールタイム")][SerializeField] private float createInterval = 7.0f;
-
-    //出現している敵の管理
-    [HideInInspector]public List<GameObject> enemies = new List<GameObject>();
+    [Tooltip("生成クールタイム"), SerializeField] private float createInterval = 7.0f;
+    [Tooltip("敵の上限数"), SerializeField] private int maxEnemyCount = 20;
+    [Tooltip("確保するメモリ容量"), SerializeField] private int capacity = 10;
 
     //カメラ
     private Camera cam;
 
+    //敵のリスト
+    private List<GameObject> enemies = new List<GameObject>();
+
     //敵用オブジェクトプール
     private ObjectPool<GameObject> enemyPool;
 
+    //敵生成カウント
+    private float fireTimer;
+
+    // == プロパティ ==
+    public List<GameObject> Enemies { get => enemies; set => enemies = value; }
+
     private void Awake()
     {
-        
+        enemyPool = new ObjectPool<GameObject>(
+            //enemyPoolが空の時に初めてInstantiateされる
+            createFunc: () => Instantiate(enemyPrefab),
+
+            //Get()した時に呼び出される
+            actionOnGet: (enemy) => enemy.SetActive(true),
+
+            //Release()した時に呼び出される
+            actionOnRelease: (enemy) => enemy.SetActive(false),
+
+            //Destroy()した時に呼び出される
+            actionOnDestroy: (enemy) => Destroy(enemy),
+
+            //二重Releaseを防止
+            collectionCheck: true,
+
+            //メモリ確保のための初期容量
+            defaultCapacity: capacity,
+
+            //上限数
+            maxSize: maxEnemyCount
+        );
     }
 
     void Start()
     {
         //カメラの取得
         cam = Camera.main;
-
-        //繰り返し敵を生成
-        InvokeRepeating("SpawnEnemy", startCreateInterval, createInterval);
     }
 
-    void Update()
+    private void Update()
     {
-        
+        //敵の数が上限数未満なら生成
+        if (enemyPool.CountActive < maxEnemyCount)
+        {
+            fireTimer += Time.deltaTime;  //クールダウン時間を減らす
+            if (fireTimer >= createInterval)
+            {
+                Fire();  //敵生成
+                fireTimer = 0.0f;  //クールダウン時間をリセット
+            }
+        }
+    }
+
+    //
+    private GameObject Fire()
+    {
+        GameObject enemyObj = enemyPool.Get();  //敵のオブジェクトをプールから取得
+        Init(enemyObj); //初期化
+        enemyObj.transform.position = GetSpawnPosition();  //敵生成位置を設定
+        enemies.Add(enemyObj);  //敵のリストに追加
+        Debug.Log($"ゲーム内にいる敵の数: {enemyPool.CountActive}");
+        return enemyObj;
     }
 
     /// <summary>
-    /// 敵生成関数
+    /// 敵を非表示する
     /// </summary>
-    private void SpawnEnemy()
+    /// <param name="releaseObj">非表示するオブジェクト</param>
+    public void ReturnToRelease(GameObject releaseObj)
+    {
+        enemyPool.Release(releaseObj);  //敵のオブジェクトをプールに返す
+        enemies.Remove(releaseObj);  //敵のリストから削除
+        releaseObj.transform.position = cam.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
+    }
+
+    /// <summary>
+    /// 敵生成位置を取得
+    /// </summary>
+    private Vector3 GetSpawnPosition()
     {
         //スクリーン座標の左下を取得
         Vector3 bottomLeft = cam.ScreenToWorldPoint(new Vector3(0, 0, 0));
@@ -72,16 +128,24 @@ public class EnemySpawnerManager : MonoBehaviour
                 break;
 
             case 2: //左
-                spawnPos = new Vector3(left - 1.0f, Random.Range(top, bottom), 0.0f);
+                spawnPos = new Vector3(left - 1.0f, Random.Range(bottom, top), 0.0f);
                 break;
 
             case 3: //右
-                spawnPos = new Vector3(right + 1.0f, Random.Range(top, bottom), 0.0f);
+                spawnPos = new Vector3(right + 1.0f, Random.Range(bottom, top), 0.0f);
                 break;
         }
 
-        var spawnObj = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
-        enemies.Add(spawnObj);
-        Debug.Log($"敵の出現数：{enemies.Count}");
+        return spawnPos;
+    }
+
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    /// <param name="enemy">敵オブジェクト</param>
+    private void Init(GameObject enemy)
+    {
+        var enemyController = enemy.GetComponent<EnemyController>();
+        enemyController.Init();
     }
 }

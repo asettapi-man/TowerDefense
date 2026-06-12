@@ -33,6 +33,7 @@ public class EnemyController : MonoBehaviour
         //‰Šú‰»
         hp = enemyStatusData.statusData.hp;
         isMove = true;
+        isDead = false;
     }
 
     void Update()
@@ -90,13 +91,21 @@ public class EnemyController : MonoBehaviour
             hp = 0;
             GameManager.Instance.AddMoney(enemyStatusData.statusData.rewardMoney); //“G‚ğ“|‚µ‚½•ñV‹à‚ğ’Ç‰Á
             Debug.Log("€–S");
-            enemySpawner.enemies.Remove(this.gameObject);   //“G‚ÌƒŠƒXƒg‚©‚çíœ
-            Debug.Log($"“G‚ÌoŒ»”F{enemySpawner.enemies.Count}");
-            Destroy(this.gameObject);
+            enemySpawner.ReturnToRelease(this.gameObject);
         }
         else
         {
             Debug.Log($"“G‚Ìc‚è‚Ì‘Ì—Í: {hp}");
         }
+    }
+
+    /// <summary>
+    /// ‰Šú‰»ŠÖ”
+    /// </summary>
+    public void Init()
+    {
+        hp = enemyStatusData.statusData.hp;
+        isDead = false;
+        isMove = true;
     }
 }

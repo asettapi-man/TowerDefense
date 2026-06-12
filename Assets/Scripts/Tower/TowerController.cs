@@ -4,8 +4,7 @@ using System.Collections;
 [DisallowMultipleComponent]
 public class TowerController : MonoBehaviour
 {
-    [Tooltip("タワーのステータス情報")]
-    [SerializeField] private TowerStatusData towerStatusData;
+    [Tooltip("タワーのステータス情報"), SerializeField] private TowerStatusData towerStatusData;
 
     private int hp; //体力
 
