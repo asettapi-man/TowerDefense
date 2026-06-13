@@ -93,7 +93,7 @@ public class EnemySpawnerManager : MonoBehaviour
     {
         enemyPool.Release(releaseObj);  //敵のオブジェクトをプールに返す
         enemies.Remove(releaseObj);  //敵のリストから削除
-        releaseObj.transform.position = cam.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
+        GameManager.Instance.EnemyKillCounter++;    //敵を倒した数をインクリメント
     }
 
     /// <summary>
@@ -107,34 +107,15 @@ public class EnemySpawnerManager : MonoBehaviour
         //スクリーン座標の右上を取得
         Vector3 topRight = cam.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, 0));
 
-        //4方向の座標取得
-        float left = bottomLeft.x;
+        //3方向の座標取得（画面右側から敵を配置するため）
         float right = topRight.x;
         float top = topRight.y;
         float bottom = bottomLeft.y;
 
         // 上下左右のどの辺から出すかをランダムに選ぶ
         Vector3 spawnPos = Vector3.zero;
-        int side = Random.Range(0, 4); // 0:上 1:下 2:左 3:右
 
-        switch (side)
-        {
-            case 0: //上
-                spawnPos = new Vector3(Random.Range(left, right), top + 1.0f, 0.0f);
-                break;
-
-            case 1: //下
-                spawnPos = new Vector3(Random.Range(left, right), bottom - 1.0f, 0.0f);
-                break;
-
-            case 2: //左
-                spawnPos = new Vector3(left - 1.0f, Random.Range(bottom, top), 0.0f);
-                break;
-
-            case 3: //右
-                spawnPos = new Vector3(right + 1.0f, Random.Range(bottom, top), 0.0f);
-                break;
-        }
+        spawnPos = new Vector3(right + 1.0f, Random.Range(bottom, top), 0.0f);
 
         return spawnPos;
     }

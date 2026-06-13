@@ -5,7 +5,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public int money { get; private set; }
+    private int enemyKillCounter = 0;   //敵を倒した数
+
+    // == プロパティ ==
+    public int money { get; private set; }  //所持金
+    public int EnemyKillCounter { get => enemyKillCounter; set => enemyKillCounter = value; }   //敵を倒した数
 
     //所持金が変化したときに呼び出されるイベント
     public event Action<int> OnMoneyChanged;
