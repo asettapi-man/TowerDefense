@@ -5,7 +5,8 @@ using System.Collections;
 public class TowerController : MonoBehaviour
 {
     [Tooltip("タワーのステータス情報"), SerializeField] private TowerStatusData towerStatusData;
-
+    
+    private ResultManager resultManager;
     private TowerManager towerManager;
     private int hp; //体力
 
@@ -29,7 +30,8 @@ public class TowerController : MonoBehaviour
 
         if (hp <= 0)
         {
-
+            resultManager.ResultTextDisplay();
+            //体力が０になったら破棄
             Destroy(this.gameObject);
         }
 

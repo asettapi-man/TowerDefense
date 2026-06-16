@@ -19,6 +19,7 @@ public class ResultManager : MonoBehaviour
     /// </summary>
     public void ResultTextDisplay()
     {
+        resultCanvas.gameObject.SetActive(true);    //表示
         //テキストに設定
         killEnemyCounterText.text = GameManager.Instance.EnemyKillCounter.ToString();   //敵を倒した数
     }
