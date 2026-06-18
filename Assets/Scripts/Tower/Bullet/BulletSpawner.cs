@@ -57,6 +57,9 @@ public class BulletSpawner : MonoBehaviour
 
     void Update()
     {
+        //ƒQ[ƒ€’â~’†‚©H
+        if (GameManager.Instance.IsGameStopped) return;
+
         //“G‚ª‘¶İ‚µ‚È‚¢ê‡‚Íˆ—I—¹
         if (enemySpawner.Enemies.Count <= 0) return;
 

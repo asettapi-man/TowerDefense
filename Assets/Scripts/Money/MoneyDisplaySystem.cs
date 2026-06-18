@@ -12,7 +12,7 @@ public class MoneyDisplaySystem : MonoBehaviour
     void Start()
     {
         GameManager.Instance.OnMoneyChanged += UpdateMoneyDisplay;
-        UpdateMoneyDisplay(GameManager.Instance.money); //初期表示を更新
+        UpdateMoneyDisplay(GameManager.Instance.Money); //初期表示を更新
     }
 
     void Update()

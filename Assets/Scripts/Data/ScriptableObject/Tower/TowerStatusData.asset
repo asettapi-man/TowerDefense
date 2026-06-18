@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: TowerStatusData
   m_EditorClassIdentifier: Assembly-CSharp::TowerStatusData
   statusData:
-    hp: 10
+    hp: 1

@@ -38,8 +38,8 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     { 
-        //移動中か？
-        if (isMove) MoveToTower();
+        //移動中かつゲーム進行中か？
+        if (isMove && !GameManager.Instance.IsGameStopped) MoveToTower();
     }
 
     /// <summary>
@@ -47,8 +47,12 @@ public class EnemyController : MonoBehaviour
     /// </summary>
     private void MoveToTower()
     {
-        //Vector3.MoveTowardsで自身の位置から目標位置までどのように移動するか指定可能
-        transform.position = Vector3.MoveTowards(transform.position, towerPos.position, enemyStatusData.statusData.moveSpeed * Time.deltaTime);
+
+        if (towerPos != null)
+        {
+            //Vector3.MoveTowardsで自身の位置から目標位置までどのように移動するか指定可能
+            transform.position = Vector3.MoveTowards(transform.position, towerPos.position, enemyStatusData.statusData.moveSpeed * Time.deltaTime);
+        }
 
         //直進させる
         //transform.position += Vector3.left * enemyStatusData.statusData.moveSpeed * Time.deltaTime;

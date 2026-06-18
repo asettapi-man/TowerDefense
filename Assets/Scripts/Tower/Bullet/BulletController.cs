@@ -43,6 +43,9 @@ public class BulletController : MonoBehaviour
 
     void Update()
     {
+        //ゲーム停止中か？
+        if (GameManager.Instance.IsGameStopped) return;
+
         Vector3 viewPos = cam.WorldToViewportPoint(transform.position); //ビューポート座標を取得
         if( viewPos.x < 0 - viewportMargin || viewPos.x > 1 + viewportMargin || viewPos.y < 0 - viewportMargin || viewPos.y > 1 + viewportMargin)
         {

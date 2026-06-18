@@ -3,23 +3,6 @@ using UnityEngine.SceneManagement;
 
 public class GameFlowManager : MonoBehaviour
 {
-    //シングルトン
-    public static GameFlowManager Instance;
-
-    private void Awake()
-    {
-        //シングルトンの実装
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
     /// <summary>
     /// シーン遷移関数
     /// </summary>
@@ -37,5 +20,12 @@ public class GameFlowManager : MonoBehaviour
     {
         Application.Quit(); //アプリケーションの終了
         Debug.Log("ゲーム終了");
+    }
+
+    public void ResetGame()
+    {
+        GameManager.Instance.Money = 0;
+        GameManager.Instance.EnemyKillCounter = 0;
+        GameManager.Instance.IsGameStopped = false;
     }
 }

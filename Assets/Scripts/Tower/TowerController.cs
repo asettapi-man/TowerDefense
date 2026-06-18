@@ -13,7 +13,8 @@ public class TowerController : MonoBehaviour
     private void Start()
     {
         hp = towerStatusData.statusData.hp;
-        towerManager = GameObject.FindFirstObjectByType<TowerManager>();    //ƒQ[ƒ€“à‚É‚ ‚éTowerManager‚ğ’T‚·
+        towerManager = GameObject.FindFirstObjectByType<TowerManager>();
+        resultManager = GameObject.FindFirstObjectByType<ResultManager>();
 
         if (towerManager == null) return;   //nullƒ`ƒFƒbƒN
 
@@ -30,6 +31,7 @@ public class TowerController : MonoBehaviour
 
         if (hp <= 0)
         {
+            GameManager.Instance?.StopGame();
             resultManager.ResultTextDisplay();
             //‘Ì—Í‚ª‚O‚É‚È‚Á‚½‚ç”jŠü
             Destroy(this.gameObject);

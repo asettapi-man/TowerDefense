@@ -62,6 +62,9 @@ public class EnemySpawnerManager : MonoBehaviour
 
     private void Update()
     {
+        //ƒQ[ƒ€’â~’†‚©H
+        if (GameManager.Instance.IsGameStopped) return; 
+
         //“G‚Ì”‚ªãŒÀ”–¢–‚È‚ç¶¬
         if (enemyPool.CountActive < maxEnemyCount)
         {
