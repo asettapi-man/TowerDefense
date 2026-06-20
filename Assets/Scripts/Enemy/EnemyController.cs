@@ -5,6 +5,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class EnemyController : MonoBehaviour
 {
+    const string CASTLETAG = "Castle";
+
     [Tooltip("敵のステータス情報")]
     [SerializeField] private EnemyStatusData enemyStatusData;
 
@@ -48,32 +50,32 @@ public class EnemyController : MonoBehaviour
     private void MoveToTower()
     {
 
-        if (towerPos != null)
-        {
-            //Vector3.MoveTowardsで自身の位置から目標位置までどのように移動するか指定可能
-            transform.position = Vector3.MoveTowards(transform.position, towerPos.position, enemyStatusData.statusData.moveSpeed * Time.deltaTime);
-        }
+        //if (towerPos != null)
+        //{
+        //    //Vector3.MoveTowardsで自身の位置から目標位置までどのように移動するか指定可能
+        //    transform.position = Vector3.MoveTowards(transform.position, towerPos.position, enemyStatusData.statusData.moveSpeed * Time.deltaTime);
+        //}
 
         //直進させる
-        //transform.position += Vector3.left * enemyStatusData.statusData.moveSpeed * Time.deltaTime;
+        if (enemyStatusData?.statusData?.moveSpeed <= 0.0f) enemyStatusData.statusData.moveSpeed = 0.1f;
+        transform.position += Vector3.left * enemyStatusData.statusData.moveSpeed * Time.deltaTime;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        //Towerタグが付いたオブジェクトに触れたか？
-        if (collision.gameObject.CompareTag("Tower"))
+        if (collision.gameObject.CompareTag(CASTLETAG))
         {
             //移動不可にする
             isMove = false;
         }
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Tower"))
+        if (collision.gameObject.CompareTag(CASTLETAG))
         {
-            //タワーにダメージを与える
-            collision.gameObject.GetComponent<TowerController>().TakeDamage(enemyStatusData.statusData.damage);
+            //ダメージを与える
+            collision.gameObject.GetComponent<CastleController>().TakeDamage(enemyStatusData.statusData.damage);
 
             //敵を倒す
             TakeDamage(hp);

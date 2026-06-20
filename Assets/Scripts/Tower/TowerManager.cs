@@ -30,13 +30,5 @@ public class TowerManager : MonoBehaviour
     {
         //リスト内から外す
         towers.Remove(tower);
-
-        //リストが空？
-        if (towers.Count <= 0)
-        {
-            //リザルト画面を表示する
-            resultManager.ResultCanvas.gameObject.SetActive(true);
-            
-        }
     }
 }

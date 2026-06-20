@@ -112,8 +112,8 @@ public class EnemySpawnerManager : MonoBehaviour
 
         //3方向の座標取得（画面右側から敵を配置するため）
         float right = topRight.x;
-        float top = topRight.y;
-        float bottom = bottomLeft.y;
+        float top = topRight.y - 1.0f;
+        float bottom = bottomLeft.y + 1.0f;
 
         // 上下左右のどの辺から出すかをランダムに選ぶ
         Vector3 spawnPos = Vector3.zero;
