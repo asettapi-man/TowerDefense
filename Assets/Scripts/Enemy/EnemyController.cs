@@ -9,22 +9,22 @@ public class EnemyController : MonoBehaviour
 
     [Tooltip("敵のステータス情報")]
     [SerializeField] private EnemyStatusData enemyStatusData;
+    [Space(10)]
+    [SerializeField] private HealthBar healthBar;
 
-    private int hp; //体力
-
+    private float hp; //体力
     private EnemySpawnerManager enemySpawner;
+    private Transform towerPos; //タワー座標
+    private Vector2 selfPos;    //自身の座標
+    private bool isMove = true;    //移動停止フラグ
+    private bool isDead = false;    //死亡フラグ
 
-    //タワー座標
-    private Transform towerPos;
-
-    //自身の座標
-    private Vector2 selfPos;
-
-    //移動停止フラグ
-    private bool isMove = true;
-
-    //死亡フラグ
-    private bool isDead = false;
+    private void Awake()
+    {
+        hp = enemyStatusData.statusData.hp;
+        if (healthBar != null) return;
+        healthBar.SetHealth(hp, enemyStatusData.statusData.hp);
+    }
 
     private void Start()
     {
@@ -87,11 +87,13 @@ public class EnemyController : MonoBehaviour
     /// </summary>
     /// <param name="dealDamage">ダメージ量</param>
     /// <returns></returns>
-    public void TakeDamage(int dealDamage)
+    public void TakeDamage(float dealDamage)
     {
         if (isDead) return; //すでに死亡している場合は処理しない
 
         hp -= dealDamage;
+
+        healthBar.SetHealth(hp, enemyStatusData.statusData.hp);
 
         //体力が０以下なら
         if (hp <= 0)
@@ -114,6 +116,7 @@ public class EnemyController : MonoBehaviour
     public void Init()
     {
         hp = enemyStatusData.statusData.hp;
+        healthBar.SetHealth(hp, enemyStatusData.statusData.hp);
         isDead = false;
         isMove = true;
     }
