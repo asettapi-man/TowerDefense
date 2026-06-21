@@ -29,7 +29,7 @@ public class EnemyController : MonoBehaviour
     private void Start()
     {
         //QÆ–Y‚ê‚ğ–h‚®‚½‚ß‚É’è‹`
-        towerPos = GameObject.FindWithTag("Tower").transform;
+        towerPos = GameObject.FindWithTag(CASTLETAG).transform;
         enemySpawner = GameObject.FindFirstObjectByType<EnemySpawnerManager>();
 
         //‰Šú‰»

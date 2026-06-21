@@ -115,9 +115,9 @@ public class EnemySpawnerManager : MonoBehaviour
         float top = topRight.y - 1.0f;
         float bottom = bottomLeft.y + 1.0f;
 
-        // 上下左右のどの辺から出すかをランダムに選ぶ
         Vector3 spawnPos = Vector3.zero;
 
+        //右の上から下までをランダムに選ぶ
         spawnPos = new Vector3(right + 1.0f, Random.Range(bottom, top), 0.0f);
 
         return spawnPos;

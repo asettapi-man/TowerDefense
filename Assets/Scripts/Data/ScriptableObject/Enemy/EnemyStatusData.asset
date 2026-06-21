@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: EnemyStatusData
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStatusData
   statusData:
-    moveSpeed: 0.7
+    moveSpeed: 0.45
     hp: 10
     damage: 1
     rewardMoney: 10

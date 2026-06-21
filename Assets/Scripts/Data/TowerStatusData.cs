@@ -6,7 +6,10 @@ public class TowerStatusData : ScriptableObject
     [System.Serializable]
     public class StatusData
     {
-        public int hp = 10;
+        public string towerName;    //タワー名
+        public Sprite icon;         //タワーアイコン
+        public int cost;            //設置コスト
+        public GameObject prefab;   //タワーオブジェクト
     }
 
     public StatusData statusData = new StatusData();

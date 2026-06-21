@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: TowerStatusData
   m_EditorClassIdentifier: Assembly-CSharp::TowerStatusData
   statusData:
-    hp: 1
+    towerName: "\u5927\u7832"
+    icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+    cost: 20
+    prefab: {fileID: 199209885809352213, guid: 61da54cf1e14afc46a6bbf3c55e69043, type: 3}
